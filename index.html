@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Google Results Fetcher</title>
+</head>
+
+<body>
+
+<h2>Google Search</h2>
+
+<input type="text" id="keyword" placeholder="zadaj klúčové slovo">
+<button onclick="search()">Search</button>
+
+<script>
+async function search() {
+
+    const keyword = document.getElementById("keyword").value
+
+    const response = await fetch("/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ keyword })
+    })
+
+    const data = await response.json()
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+    const url = window.URL.createObjectURL(blob)
+
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "results.json"
+    a.click()
+}
+</script>
+
+</body>
+</html>
