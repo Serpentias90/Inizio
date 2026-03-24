@@ -1,0 +1,5 @@
+"dependencies": {
+  "axios": "^1.6.0",
+  "cheerio": "^1.0.0",
+  "express": "^4.19.0"
+}
