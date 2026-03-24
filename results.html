@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>Results</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:40px;
+}
+
+.result{
+margin-bottom:25px;
+}
+
+.result a{
+font-size:18px;
+font-weight:bold;
+color:blue;
+text-decoration:none;
+}
+
+button{
+margin-top:30px;
+padding:10px 20px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Search Results</h2>
+
+<div id="results"></div>
+
+<button onclick="save()">Save results</button>
+
+<script>
+
+const results = JSON.parse(localStorage.getItem("results")) || []
+
+const container = document.getElementById("results")
+
+results.forEach(r=>{
+
+const div=document.createElement("div")
+div.className="result"
+
+div.innerHTML=`
+<a href="${r.link}" target="_blank">${r.title}</a>
+<p>${r.snippet}</p>
+`
+
+container.appendChild(div)
+
+})
+
+function save(){
+
+const blob = new Blob(
+[JSON.stringify(results,null,2)],
+{type:"application/json"}
+)
+
+const url = URL.createObjectURL(blob)
+
+const a = document.createElement("a")
+a.href = url
+a.download = "results.json"
+a.click()
+
+}
+
+</script>
+
+</body>
+</html>
