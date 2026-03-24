@@ -44,7 +44,8 @@ cursor:pointer;
 
 <script>
 
-const results = JSON.parse(localStorage.getItem("results")) || []
+const data = JSON.parse(localStorage.getItem("results")) || {}
+const results = data.results || []
 
 const container = document.getElementById("results")
 
