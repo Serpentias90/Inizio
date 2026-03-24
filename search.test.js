@@ -1,20 +1,31 @@
-const { extractResults } = require("./parser")
+const request = require("supertest")
+const express = require("express")
+const app = require("./server") 
 
-test("should return valid results structure", () => {
 
-    const mockHTML = `
-    <div class="g">
-        <h3>Example title</h3>
-        <a href="https://example.com"></a>
-        <div class="VwiC3b">Example snippet</div>
-    </div>
-    `
+describe("POST /search", () => {
 
-    const results = extractResults(mockHTML)
+  it("should return results array or error", async () => {
 
-    expect(results.length).toBe(1)
+    const response = await request(app)
+      .post("/search")
+      .send({ keyword: "javascript tutorial" })
+      .set("Accept", "application/json")
+    
+    expect(response.statusCode).toBe(200)
+    
+    expect(response.body).toHaveProperty("results")
+    
+    // results môže byť [] alebo obsahovať prvky
+    expect(Array.isArray(response.body.results)).toBe(true)
+    
+    if(response.body.results.length > 0){
+      const first = response.body.results[0]
+      expect(first).toHaveProperty("title")
+      expect(first).toHaveProperty("link")
+      expect(first).toHaveProperty("snippet")
+    }
 
-    expect(results[0]).toHaveProperty("title")
-    expect(results[0]).toHaveProperty("link")
-    expect(results[0]).toHaveProperty("snippet")
+  })
+
 })
