@@ -28,13 +28,13 @@ app.post("/search", async (req, res) => {
 
     console.log(response.data)
 
-    const results = (response.data.organic || []).map(r => ({
-      title: r.title,
-      link: r.link,
-      snippet: r.snippet
-    }))
+    const results = response.data.organic.map(item => ({
+  title: item.title,
+  link: item.link,
+  snippet: item.snippet
+}))
 
-    res.json(results)
+res.json({ results }) 
 
   } catch (error) {
 
