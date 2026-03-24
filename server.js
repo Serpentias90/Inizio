@@ -14,7 +14,10 @@ app.post("/search", async (req, res) => {
 
     const response = await axios.post(
       "https://google.serper.dev/search",
-      { q: keyword, num: 10 },
+      {
+        q: keyword,
+        num: 10
+      },
       {
         headers: {
           "X-API-KEY": process.env.SERPER_API_KEY,
@@ -23,7 +26,9 @@ app.post("/search", async (req, res) => {
       }
     )
 
-    const results = response.data.organic.map(r => ({
+    console.log(response.data)
+
+    const results = (response.data.organic || []).map(r => ({
       title: r.title,
       link: r.link,
       snippet: r.snippet
@@ -33,8 +38,10 @@ app.post("/search", async (req, res) => {
 
   } catch (error) {
 
+    console.log("SERPER ERROR:", error.response?.data || error.message)
+
     res.json({
-      error: "Search failed",
+      error: error.response?.data || error.message,
       results: []
     })
 
@@ -44,4 +51,6 @@ app.post("/search", async (req, res) => {
 
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT)
+app.listen(PORT, () => {
+  console.log("Server running")
+})
