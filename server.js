@@ -10,16 +10,25 @@ app.use(express.static("."))
 app.post("/search", async (req, res) => {
 
     const keyword = req.body.keyword
-    const url = `https://www.google.com/search?q=${keyword}`
+    const url = `https://www.google.com/search?q=${encodeURIComponent(keyword)}&num=10`
 
-    const response = await axios.get(url, {
-        headers: { "User-Agent": "Mozilla/5.0" }
-    })
+  const response = await axios.get(url, {
+  headers: {
+    "User-Agent": "Mozilla/5.0",
+    "Accept-Language": "en-US,en;q=0.9"
+  },
+  validateStatus: () => true
+})
 
     const $ = cheerio.load(response.data)
 
     let results = []
-
+if (response.data.includes("sorry/index")) {
+  return res.json({
+    error: "Google blocked the request",
+    results: []
+  })
+}
     $("div.g").each((i, el) => {
 
         const title = $(el).find("h3").text()
