@@ -28,4 +28,47 @@ describe("POST /search", () => {
 
   })
 
+  const keywords = ["javascript", "nodejs tutorial", "express api"]
+
+keywords.forEach(word => {
+  it(`should return results for keyword: ${word}`, async () => {
+    const response = await request(app)
+      .post("/search")
+      .send({ keyword: word })
+      .set("Accept", "application/json")
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toHaveProperty("results")
+    expect(Array.isArray(response.body.results)).toBe(true)
+  })
+})
+
+it("should handle empty keyword gracefully", async () => {
+  const response = await request(app)
+    .post("/search")
+    .send({ keyword: "" })
+    .set("Accept", "application/json")
+
+  expect(response.statusCode).toBe(200)
+  expect(response.body).toHaveProperty("results")
+  expect(Array.isArray(response.body.results)).toBe(true)
+})
+
+it("should return error object when API fails", async () => {
+
+  // tu môžeme dočasne zmeniť API URL alebo key
+  const originalKey = process.env.SERPER_API_KEY
+  process.env.SERPER_API_KEY = "invalid_key"
+
+  const response = await request(app)
+    .post("/search")
+    .send({ keyword: "test" })
+    .set("Accept", "application/json")
+
+  expect(response.body).toHaveProperty("error")
+  expect(Array.isArray(response.body.results)).toBe(true)
+
+  process.env.SERPER_API_KEY = originalKey // vrátime key späť
+})
+
 })
