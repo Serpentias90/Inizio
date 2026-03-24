@@ -1,38 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="sk">
 <head>
+
 <meta charset="UTF-8">
-<title>Google Results Fetcher</title>
+<title>Google Search Extractor</title>
+
+<style>
+
+body{
+    font-family: Arial;
+    height:100vh;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#f2f2f2;
+}
+
+.container{
+    text-align:center;
+}
+
+input{
+    padding:10px;
+    width:300px;
+    font-size:16px;
+}
+
+button{
+    padding:10px 20px;
+    font-size:16px;
+    margin-left:10px;
+    cursor:pointer;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<h2>Google Search</h2>
+<div class="container">
 
-<input type="text" id="keyword" placeholder="zadaj klúčové slovo">
+<h2>Search Google Results</h2>
+
+<input id="keyword" placeholder="Enter keyword">
+
 <button onclick="search()">Search</button>
 
+</div>
+
 <script>
-async function search() {
 
-    const keyword = document.getElementById("keyword").value
+async function search(){
 
-    const response = await fetch("/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keyword })
-    })
+const keyword = document.getElementById("keyword").value
 
-    const data = await response.json()
+const response = await fetch("/search",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({keyword})
+})
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
-    const url = window.URL.createObjectURL(blob)
+const results = await response.json()
 
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "results.json"
-    a.click()
+localStorage.setItem("results",JSON.stringify(results))
+
+window.location.href="results.html"
+
 }
+
 </script>
 
 </body>
