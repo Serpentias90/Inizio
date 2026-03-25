@@ -55,6 +55,8 @@ button{
 
 async function search(){
 
+event.preventDefault()
+    
 const keyword = document.getElementById("keyword").value
 
 const response = await fetch("/search",{
